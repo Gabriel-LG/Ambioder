@@ -124,7 +124,7 @@ After receiving the entire sequence, the PWM period and red/green/blue dutycycle
 
 <h2>The future</h2>
 
-<p>Although I am very pleased with the result, I am determined to get the darkest shades to transition seamlessly as well. So I will revisit the  serial protocol to allow for 8-bit dutycycles. Also I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. So I will attempt to double the the tick frequency for 19200baud, by optimizing the IO-loop. If that will not work, then I will attempt to increase the tick frequency and do 4 or 5 samples per UART bit.</p>
+<p>Although I am very pleased with the result, I am determined to get the darkest shades to transition seamlessly as well. So I plan to revisit the  serial protocol to allow for 8-bit dutycycles. Also I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. Therefore I will attempt to double the the tick frequency for 19200baud, by optimizing the IO-loop. If that fails, then I shall increase the tick frequency to 4x or 5x the UART baud-rate.</p>
       </section>
     </div>
 
