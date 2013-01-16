@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Amber : Reprogram Ikea's Dioder, to interface with Boblight for Ambient Lighting" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Amber</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Gabriel-LG/amber">View on GitHub</a>
+
+          <h1 id="project_title">Amber</h1>
+          <h2 id="project_tagline">Reprogram Ikea's Dioder, to interface with Boblight for Ambient Lighting</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/Gabriel-LG/amber/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/Gabriel-LG/amber/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>A minimalistic hardware modification is all that is required.</p>
+
+
+
+<p><em><strong>WARNING:</strong></em> after reprogramming you Dioder, its original functionality will be lost.</p>
+
+<h2>Intro</h2>
+
+<p>Sometime ago I purchased a Dioder LED light from Ikea, with the intention to create an ambient lighting device for my mediacentre. I saw that there were numerous hacks around, using a dioder, including an ambient lighting hack. However most hacks require an extra MCU, or perform a complete brain transplant. I figured that the Dioder is powerful enough to implement an interface for Ambient Lighting.</p>
+
+<p>My Dioder was laying on the shelf for like 6 months before I really got around to playing with it. I found three projects that were really helpful; first of all <a href="http://christian.amsuess.com/tutorials/threebutton_dioder/">Christian Amuess' Dioder++ project</a> that actually provided the hardware modifications I used for my hack. Also <a href="http://code.google.com/p/boblight/">the Boblight project by Bob Loosen</a>, that supplied me with ready-made Ambient Lighting software for my mediacentre.</p>
+
+<p>Also I would like to mention  <a href="http://www.vagrearg.org/content/skilt20">the OSAA Skilt 2.0 project by Vagrearg</a>, this project provided me with the schematics of the Dioder's internal hardware and a benchmark of what I was up against ;)</p>
+
+<p>I decided to name my project “Amber”, since it will perform Ambient Lighting and because orange is the one color that Ikea forgot to add to the color wheel (really, just have a good look at it). But the real reason I choose this name, was because the name “dioder” was already taken in the Boblight project.</p>
+
+<h2>About the Dioder</h2>
+
+<p>The Dioder (3-button version) consists of a power supply, 4 led bars each containing 9 pretty bright RGB LEDs, some fixtures and a control unit. The interesting part is the control unit, which is build around a Microchip PIC16F684 microcontroller. The PIC generates 3 PWM signals (Red, Green and Blue) which are amplified by 3 FETs, to power the RGB LEDs. A potmeter is connected to an AD convertor attached to a colorwheel. There are also 3 buttons attached to GPIO lines.</p>
+
+<p>So I hooked up my old oscilloscope to the Dioder to see what Ikea's software was capable of. It turns out that rotating the color wheel, only fades one channel at a time (the other two are kept either on or off). The PWM period is exactly 1kHz and is divided in 20 steps (providing 21 intensities, including black/off). </p>
+
+<h2>My goals</h2>
+
+<p>What I wanted to achieve, was a simple hack, that provides a reliable and fast way for my mediacentre (with Boblight) to control the color of the LED bars. Also the PWM frequency and resolution need to be sufficient and constant, to ensure an enjoyable multimedia experience.</p>
+
+<h2>The hardware</h2>
+
+<p>What I created was a simple hack in terms of hardware, all I have done was perform the Dioder++ hack and combined it with <a href="http://dx.com/p/usb-to-rs232-adapter-with-usb-extension-cable-41cm-length-24799">a USB-RS232 adapter from Dealextreme</a>; this adapter is so cheap, that it does not even come with an RS232 level shifter, so I could interface it directly with the PIC (using the ICSP connector, gnd to gnd and TX to Vpp/MCLR/RA3).</p>
+
+
+
+<h2>The PIC software</h2>
+
+<p>The PIC software was a whole other matter, the PIC16F684 does not contain a UART controller, it also does not contain a PWM controller. And since I want the UART to be 100% reliable and the PWM to be 100% stable, the absence of these components provided a challenge.</p>
+
+<p>Luckily the PIC16F684 does come with an interrupt controller and a timer/comparator interrupt source. So I set up the timer to generate interrupts at 3x the baud rate. At this rate I can guarantee that it will always sample the RX line while it is stable (not near an edge).</p>
+
+
+
+<p>I also use this timer "tick" to generate the PWM steps.</p>
+
+<p>The Dioder uses the internal oscillator of the PIC16F684, so for my program I configured it for the maximum of 8Mhz, resulting in 2 million instructions per second.  This might sound like a lot, but is actually pretty tight as you will read later on...</p>
+
+<h3>Design</h3>
+
+<p>I designed the PIC software to run as two concurrent loops.</p>
+
+<p>The main-loop gathers the received bytes from the UART. After a complete sequence is received, it will set the PWM period and dutycycles for red, green and blue to the received values.</p>
+
+<p>The IO-loop is executed with every tick of the timer. It starts by latching the I/O pins (to ensure constant timing), it then steps the PWM outputs and performs the UART RX-line sampling. Before and after handling the interrupt, it switches the context of the main-loop, so the main-loop can be interrupted at any time, without it ever noticing.</p>
+
+<p>These two loops interface with each-other using a few shared variables.</p>
+
+
+
+<h3>Implementation</h3>
+
+<p>Entering and returning from an interrupt costs 3 and 2 instruction cycles respectively. Provided a baudrate of 9600Hz, this leaves max 2.000.000/(9600*3)-3-2=64 instructions per tick for the IO-loop. In this time, the IO-loop must:</p>
+
+<ul>
+<li>switch out the main-loop context (W and STATUS registers).</li>
+<li>reset the interrupt flag.</li>
+<li>step (or restart) 3 PWM loops.</li>
+<li>sample the RX line and handle it.</li>
+<li>switch back the main-loop context.</li>
+</ul><p>The main-loop will look for a sequence of the following bytes:</p>
+
+<p><code>binary: (00xxxxxx) 01xxxxxx 10xxxxxx 11xxxxxx</code></p>
+
+<p>The first byte (optional) configures the PWM period in number of ticks. The following 3 bytes (obligatory)  set the red,green and blue dutycycles respectively. The dutycycle is also expressed in number of ticks.</p>
+
+<p>Every UART error or unexpected RX byte, will result in the main-loop restarting.
+After receiving the entire sequence, the PWM period and red/green/blue dutycycles are passed to the PWM generator and the main-loop restarts.</p>
+
+<h3>The result</h3>
+
+<p>My implementation provides a UART receiver, an RGB PWM generator and a main-loop implementing my protocol. I also implemented a UART transmitter, that can be activated to use any PORTA output (this transmitter is not used).</p>
+
+<p>The UART receiver functions at 9600/8N1, with a 1-byte buffer, the baud-rate is configurable by changing the timer settings.</p>
+
+<p>The RGB PWM generator can generate from 16 Million colors at 113Hz, to 8 colors at 29kHz. The PWM generator is also buffered, so it will never flicker when changing colors. The PWM generator is limited to 262.144 colors by the serial protocol I am using right now.</p>
+
+<p>I profiled the execution paths for the IO-loop, and came to a worst-case scenario where 60 instructions are consumed per tick (including interrupt entry and return) and 44 in a typical scenario. So I can state that the Amber project implements a hard-real-time system.</p>
+
+<h2>The boblight implementation</h2>
+
+<p>For the ambilight functionality, I downloaded the Boblight source code and added a class that implements the Amber protocol. I actually did not even have to get acquainted all the ins and outs of Boblight, since I could just copy and modify a similar device.</p>
+
+<p>I implemented the boblight plugin to do 18-bit colors@453Hz and configured a sampling rate of 50Hz for boblightd and boblight-X11. The effect is pretty cool if I may say so myself. Although I thought that 18-bit (262.144) colors would be more than enough, I do notice the transitions between the darkest shades. Furthermore I was worried that the limited 453Hz PWM frequency would produce a flickering effect. But I can only notice some flickering when looking directly into the LEDs, and not at all when the light is diffused on the wall.</p>
+
+<h2>The future</h2>
+
+<p>Although I am very pleased with the result, I am determined to get the darkest shades to transition seamlessly as well. So I will revisit the  serial protocol to allow for 8-bit dutycycles. Also I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. So I will attempt to double the the tick frequency for 19200baud, by optimizing the IO-loop. If that will not work, then I will attempt to increase the tick frequency and do 4 or 5 samples per UART bit.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Amber maintained by <a href="https://github.com/Gabriel-LG">Gabriel-LG</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
