@@ -53,7 +53,7 @@ So I hooked up my old oscilloscope to the Dioder to see what Ikea's software was
 
 <p>To turn your Dioder into an Ambioder, all you need to do is <a href="http://christian.amsuess.com/tutorials/threebutton_dioder/">solder the ICSP port (5 wires) onto the Dioder PCB and reprogram it</a>. Then connect a 5V RS232 convertor to the ICSP port (GND to GND and TX to Vpp).<br>
 I used <a href="http://dx.com/p/usb-to-rs232-adapter-with-usb-extension-cable-41cm-length-24799">this USB-RS232 adapter from Dealextreme</a>; this adapter is so cheap, that it does not even come with an RS232 level shifter, so I could interface it directly with the Ambioder.
-<img src="http://gabriel-lg.github.com/Ambioder/images/Ambioder_hw.jpg" alt="hardware"></p>
+<img src="http://gabriel-lg.github.com/Ambioder/Ambioder_hw.jpg" alt="hardware"></p>
 
 <h2>The PIC software</h2>
 
@@ -67,7 +67,7 @@ The Ambioder uses the PIC16F684  internal oscillator at 8Mhz, resulting in 2 mil
 The main-loop gathers the received bytes from the UART. After a complete sequence is received, it will pass the received PWM period and R/G/B dutycycles PWM generator.<br>
 The IO-loop is executed with every tick of the timer. It starts by latching the I/O pins (to ensure constant timing), it then steps the PWM generator and performs the UART RX-line sampling.<br>
 These two loops interface with each-other using a few shared variables.
-<img src="http://gabriel-lg.github.com/Ambioder/images/Ambioder_design.svg" alt="hardware"></p>
+<img src="http://gabriel-lg.github.com/Ambioder/Ambioder_design.svg" alt="hardware"></p>
 
 <h3>Serial protocol</h3>
 
