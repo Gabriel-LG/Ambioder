@@ -67,7 +67,7 @@ The Ambioder uses the PIC16F684  internal oscillator at 8Mhz, resulting in 2 mil
 The main-loop gathers the received bytes from the UART. After a complete sequence is received, it will pass the received PWM period and R/G/B dutycycles PWM generator.<br>
 The IO-loop is executed with every tick of the timer. It starts by latching the I/O pins (to ensure constant timing), it then steps the PWM generator and performs the UART RX-line sampling.<br>
 These two loops interface with each-other using a few shared variables.
-<img src="https://raw.github.com/wiki/gabriel-lg/Ambioder/images/Ambioder_design.svg" alt="hardware"></p>
+<img src="https://raw.github.com/wiki/gabriel-lg/Ambioder/images/Ambioder_design.png" alt="design"></p>
 
 <h3>Serial protocol</h3>
 
