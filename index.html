@@ -71,8 +71,8 @@ These two loops interface with each-other using a few shared variables.
 
 <h3>Serial protocol</h3>
 
-<p>The main-loop will look for a sequence of the following bytes:<br><code>binary: (00xxxxxx) 01xxxxxx 10xxxxxx 11xxxxxx</code><br>
-The first byte (optional) configures the PWM period in number of timer ticks. The following 3 bytes (obligatory)  set the red,green and blue dutycycles respectively. The dutycycle is also expressed in number of ticks.<br>
+<p>The main-loop will look for a sequence of the following bytes:<br><code>binary: 00xxxxxx 01xxxxxx 10xxxxxx 11xxxxxx</code><br>
+The first byte configures the PWM period in number of timer ticks. The following 3 bytes set the red,green and blue dutycycles respectively. The dutycycle is also expressed in number of ticks.<br>
 After receiving the entire sequence, the PWM period and red/green/blue dutycycles are passed to the PWM generator and the main-loop restarts.
 Every UART error or unexpected RX byte, will result in the main-loop restarting.</p>
 
