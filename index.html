@@ -72,8 +72,19 @@ These two loops interface with each-other using a few shared variables.
 
 <h3>Serial protocol</h3>
 
-<p>The main-loop will look for a sequence of the following bytes:<br><code>binary: 00xxxxxx 01xxxxxx 10xxxxxx 11xxxxxx</code><br>
-The first byte configures the PWM period in number of timer ticks. The following 3 bytes set the red,green and blue dutycycles respectively. The dutycycle is also expressed in number of ticks.<br>
+<p>The main-loop will look for a sequence of the following bytes (hex):<br><code>[0x0X 0x1X] 0x2X 0x3X 0x4X 0x5X 0x6X 0x7X</code><br>
+The most significant nibble contains the address, the least significant nibble contains the data</p>
+
+<ul>
+<li>address 0: pwm period, most significant nibble</li>
+<li>address 1: pwm period, least significant nibble</li>
+<li>address 2: pwm red, most significant nibble</li>
+<li>address 3: pwm red, least significant nibble</li>
+<li>address 4: pwm green, most significant nibble</li>
+<li>address 5: pwm green, least significant nibble</li>
+<li>address 6: pwm blue, most significant nibble</li>
+<li>address 7: pwm blue, least significant nibble</li>
+</ul><p>The pwm period is optional and will remain unchanged if not sent. 
 After receiving the entire sequence, the PWM period and red/green/blue dutycycles are passed to the PWM generator and the main-loop restarts.
 Every UART error or unexpected RX byte, will result in the main-loop restarting.</p>
 
@@ -81,20 +92,21 @@ Every UART error or unexpected RX byte, will result in the main-loop restarting.
 
 <p>My implementation provides a UART receiver, an RGB PWM generator and a main-loop implementing my protocol. I also implemented a UART transmitter, that can be activated to use any PORTA output (this transmitter is not used right now).<br>
 The UART receiver functions at 9600/8N1, with a 1-byte buffer, the baud-rate is configurable by changing the timer settings.<br>
-The RGB PWM generator can generate from 16 Million colors at 113Hz, to 8 colors at 29kHz. The PWM generator is also buffered, so it will never flicker when changing colors. The PWM generator is limited to 262.144 colors by the serial protocol I am using right now.<br>
+The RGB PWM generator can generate from 16 Million colors at 113Hz, to 8 colors at 29kHz. The PWM generator is also buffered, so it will never flicker when changing colors.<br>
 I profiled the execution paths for the IO-loop, and came to a worst-case scenario where 60 instructions are consumed per tick (including interrupt entry and return) and 44 in a typical scenario. This leaves more than enough CPU cycles to execute the main-loop concurrently. So I can state that Ambioder is a hard-real-time system.</p>
 
 <h2>The boblight implementation</h2>
 
-<p>To control the Ambioder device, I extended the Boblight project to add the Ambioder protocol. It sets the Ambioder to 18-bit colors@453Hz.  </p>
+<p>To control the Ambioder device, I extended the Boblight project to Ambioder support.  </p>
 
 <h1>The result</h1>
 
-<p>For my test setup, I configured a sampling rate of 50Hz for boblightd and boblight-X11. The effect is pretty cool if I may say so myself. Although I thought that 18-bit (262.144) colors would be more than enough, I do notice the transitions between the darkest shades. Furthermore I was worried that the limited 453Hz PWM frequency would produce a flickering effect. But I can only notice some flickering when looking directly into the LEDs, and not at all when the light is diffused on the wall.</p>
+<p>For my first field test, I used a previous version of Ambioder, limited to 262.144 colors@453Hz. The effect was pretty cool if I may say so myself. Although I thought that 18-bit (262.144) colors would be more than enough, I do notice the transitions between the darkest shades. Also I was worried that the limited 453Hz PWM frequency would produce a flickering effect. But I could only notice some flickering when looking directly into the LEDs, and not at all when the light is diffused on the wall.</p>
 
 <h2>The future</h2>
 
-<p>Although I am very pleased with the result, I am determined to get the darkest shades to transition seamlessly as well. So I plan to revisit the  serial protocol to allow for 8-bit dutycycles. Also I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. Therefore I will attempt to double the the tick frequency by optimizing the IO-loop. If that fails, then I will increase the tick frequency to 4x or 5x the UART baud-rate.</p>
+<p>Although I was very pleased with the result, I revisited the  serial protocol to allow for 8-bit dutycycles.<br>
+I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. Therefore I will attempt to double the the tick frequency by optimizing the IO-loop. If that fails, then I will increase the tick frequency to 4x or 5x the UART baud-rate.</p>
       </section>
     </div>
 
