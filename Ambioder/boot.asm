@@ -30,7 +30,7 @@
 ; * calls the main routine
 ;*******************************************************************************
     list p=16f684
-    #include <p16f684.inc>
+    #include <P16F684.INC>
     __CONFIG _FCMEN_OFF & _IESO_OFF & _BOD_OFF & _CPD_OFF & _MCLRE_OFF & _PWRTE_OFF & _WDT_OFF & _INTRC_OSC_NOCLKOUT
 
     extern uart_rx_init

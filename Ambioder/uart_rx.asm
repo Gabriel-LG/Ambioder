@@ -45,7 +45,7 @@
 ;*******************************************************************************
 ; Implementation
 ;*******************************************************************************
-#include <p16f684.inc>
+#include <P16F684.INC>
 #include "uart.inc"
 #include "iolatch.inc"
     extern io_buffer
@@ -101,15 +101,28 @@ rx_level
     bsf rx_buf, 7
     return
 rx_stop
-    ; increase jumptable entry
-    incf rx_jump, F
+    ; clear jumptable entry
+    clrf rx_jump
     ; set error if stop bit is not encountered
     btfsc io_buffer, IO_RX
     bsf uart_rx_flags, UART_RX_ERROR
     ; halt rx when error is received
     btfsc uart_rx_flags, UART_RX_ERROR
-    clrf rx_jump
     return
+    ; check for overflow
+    btfsc uart_rx_flags, UART_RX_DATA
+    bsf uart_rx_flags, UART_RX_OVERFLOW
+    ; discard buffer on overflow
+    btfsc uart_rx_flags, UART_RX_OVERFLOW
+    return
+    movfw rx_buf
+    movwf uart_rx_byte
+    ; set the data ready flag
+    bsf uart_rx_flags, UART_RX_DATA
+    return
+
+
+
 rx_done
     ; set jumptable entry back to idle
     clrf rx_jump
@@ -173,6 +186,5 @@ uart_rx_tick
     ;stop bit
     goto rx_edge
     goto rx_stop
-    goto rx_done
 
     END

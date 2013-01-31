@@ -45,96 +45,91 @@ rx_blue RES 1
 
 
 ;*******************************************************************************
+; This macro attempts to receive a data nibble from the uart. On success the
+; address nibble is cleared from uart_rx_byte. On failure uart_rx_byte is not
+; modified.
+; - expectedAddress must be the value of the most significant (address) nibble
+; - onFailure must be the label to jump to on failure. This is done if the
+;   address nibble does not match the expected address, or if the uart
+;   encounters an error or overflow.
+;*******************************************************************************
+receive macro expectAddress, onFailure
+    local loop, fail
+loop
+    ; failure on rx error
+    btfsc uart_rx_flags, UART_RX_ERROR
+    goto onFailure
+    ; failure on overflow
+    btfsc uart_rx_flags, UART_RX_OVERFLOW
+    goto onFailure
+    ; loop until received
+    btfss uart_rx_flags, UART_RX_DATA
+    goto loop
+
+    movlw expectAddress << 4
+    xorwf uart_rx_byte, F
+    btfsc uart_rx_byte, 4
+    goto fail
+    btfsc uart_rx_byte, 5
+    goto fail
+    btfsc uart_rx_byte, 6
+    goto fail
+    btfsc uart_rx_byte, 7
+    goto fail
+    goto $+3
+fail
+    xorwf uart_rx_byte, F
+    goto onFailure
+    endm
+
+;*******************************************************************************
     CODE
 mainloop
     clrf uart_rx_flags
 
-receive_period
-    ; restart on rx error
-    btfsc uart_rx_flags, UART_RX_ERROR
-    goto mainloop
-    ; restart on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    goto mainloop
-    ; check for received bytes
-    btfss uart_rx_flags, UART_RX_DATA
-    goto receive_period
-    ; check if received is b'00xxxxxx'
-    btfsc uart_rx_byte, 7
-    goto mainloop
-    btfsc uart_rx_byte, 6
-    goto mainloop
-    movlw b'00111111'
-    andwf uart_rx_byte, W
+receive_start
+    movf pwm_period, W
     movwf rx_period
-    ; clear UART_RX_DATA
+    receive 2, receive_period
+    goto parse_red
+receive_period
+    nop ; for debugging, because mplabx cannot set breakpoints in macros
+    receive 0, mainloop
+    swapf uart_rx_byte, W
     bcf uart_rx_flags, UART_RX_DATA
+    movwf rx_period
+    receive 1, receive_start
+    movf uart_rx_byte, W
+    bcf uart_rx_flags, UART_RX_DATA
+    iorwf rx_period, F
 
-receive_red
-    ; restart on rx error
-    btfsc uart_rx_flags, UART_RX_ERROR
-    goto mainloop
-    ; restart on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    goto mainloop
-    ; check for received bytes
-    btfss uart_rx_flags, UART_RX_DATA
-    goto receive_red
-    ; check if received is b'01xxxxxx'
-    btfsc uart_rx_byte, 7
-    goto receive_period
-    btfss uart_rx_byte, 6
-    goto receive_period
-    ;move 6 least significant bytes to rx_red
-    movlw b'00111111'
-    andwf uart_rx_byte, W
+    receive 2, receive_start
+parse_red
+    swapf uart_rx_byte, W
+    bcf uart_rx_flags, UART_RX_DATA
     movwf rx_red
-    ; clear UART_RX_DATA
+    receive 3, receive_start
+    movf uart_rx_byte, W
     bcf uart_rx_flags, UART_RX_DATA
+    iorwf rx_red, F
 
-receive_green
-    ; restart on rx error
-    btfsc uart_rx_flags, UART_RX_ERROR
-    goto mainloop
-    ; restart on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    goto mainloop
-    ; check for received bytes
-    btfss uart_rx_flags, UART_RX_DATA
-    goto receive_green
-    ; check if received is b'10xxxxxx'
-    btfss uart_rx_byte, 7
-    goto receive_period
-    btfsc uart_rx_byte, 6
-    goto receive_period
-    ;move 6 least significant bytes to rx_green
-    movlw b'00111111'
-    andwf uart_rx_byte, W
+    receive 4, receive_start
+    swapf uart_rx_byte, W
+    bcf uart_rx_flags, UART_RX_DATA
     movwf rx_green
-    ; clear UART_RX_DATA
+    receive 5, receive_start
+    movf uart_rx_byte, W
     bcf uart_rx_flags, UART_RX_DATA
+    iorwf rx_green, F
 
-receive_blue
-    ; restart on rx error
-    btfsc uart_rx_flags, UART_RX_ERROR
-    goto mainloop
-    ; restart on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    goto mainloop
-    ; check for received bytes
-    btfss uart_rx_flags, UART_RX_DATA
-    goto receive_blue
-    ; check if received is b'11xxxxxx'
-    btfss uart_rx_byte, 7
-    goto receive_period
-    btfss uart_rx_byte, 6
-    goto receive_period
-    ;move 6 least significant bytes to rx_blue
-    movlw b'00111111'
-    andwf uart_rx_byte, W
-    movwf rx_blue
-    ; clear UART_RX_DATA
+    receive 6, receive_start
+    swapf uart_rx_byte, W
     bcf uart_rx_flags, UART_RX_DATA
+    movwf rx_blue
+    receive 7, receive_start
+    movf uart_rx_byte, W
+    bcf uart_rx_flags, UART_RX_DATA
+    iorwf rx_blue, F
 
     ;set colors
     movfw rx_period
