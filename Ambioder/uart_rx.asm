@@ -70,6 +70,7 @@ rx_buf RES 1
 uart_rx_init
     clrf rx_jump
     clrf uart_rx_flags
+    clrf PCLATH
     return
 
 ;*******************************************************************************

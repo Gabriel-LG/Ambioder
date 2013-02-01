@@ -29,7 +29,7 @@
     global io_buffer
 
 ;*******************************************************************************
-iolatch_global_data UDATA
+iolatch_global_data UDATA_SHR
 io_buffer  RES 1
     END
 

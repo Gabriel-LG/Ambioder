@@ -26,6 +26,14 @@
 ;*******************************************************************************
 ; the main program
 ; mainloop is the entrypoint
+;
+; **** BIG FAT WARNING ****
+; - The ISR corrupts the STATUS register, this register can not be used
+;   by the main loop anymore.
+; - The ISR also requires the PCLATH register to remain 0x00, so this register
+;   may not be written by the main loop.
+; - Finally the ISR requires that Bank 0 is selected at all times.
+; These restrictions are necessary for doubling the PWM frequency.
 ;*******************************************************************************
    global mainloop
 
@@ -141,5 +149,5 @@ parse_red
     movfw rx_blue
     movwf pwm_blue
 
-    goto receive_period
+    goto receive_start
     END

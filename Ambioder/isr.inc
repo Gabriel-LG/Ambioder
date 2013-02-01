@@ -26,31 +26,34 @@
 ;*******************************************************************************
 isr_enter MACRO
 #ifndef w_buf
-    extern w_buf, s_buf
+    extern w_buf
+    ;extern s_buf      ;assuming STATUS not used
 #endif
 ; store the STATUS and W registers
     movwf w_buf
-    swapf STATUS, W
-    movwf s_buf
+    ;swapf STATUS, W   ;assuming STATUS not used
+    ;movwf s_buf       ;assuming STATUS not used
 
 ; switch to bank0
-    ;bcf STATUS, RP0 ;assuming main routine stays in bank0
+    ;bcf STATUS, RP0   ;assuming RP0 never set
 
 ; clear all interrupt flags
-    ;movlw b'11111000' ; assuming only TMR2IF
-    ;andwf INTCON, F ; assuming only TMR2IF
-    clrf  PIR1
+    ;movlw b'11111000' ;assuming only TMR2IF
+    ;andwf INTCON, F   ;assuming only TMR2IF
+    clrf  PIR1         ;assuming only TMR2IF
     ENDM
 
 ;*******************************************************************************
 isr_exit MACRO
 #ifndef w_buf
-    extern w_buf, s_buf
+    extern w_buf
+    ;extern s_buf    ;assuming STATUS not used
 #endif
 ; restore the STATUS and W registers
-    swapf s_buf, W
-    movwf STATUS
-    swapf w_buf, F
-    swapf w_buf, W
+    ;swapf s_buf, W  ;assuming STATUS not used
+    ;movwf STATUS    ;assuming STATUS not used
+    ;swapf w_buf, F  ;assuming STATUS not used
+    ;swapf w_buf, W  ;assuming STATUS not used
+    movfw w_buf      ;assuming STATUS not used
     retfie
     ENDM

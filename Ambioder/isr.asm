@@ -29,7 +29,8 @@
 ; triggered by TMR2 and that bank0 is selected.
 ;*******************************************************************************
     ;only for access by isr_enter/isr_exit macros:
-    global w_buf, s_buf
+    global w_buf
+    ;global s_buf     ;assuming STATUS not used
 
 #include <P16F684.INC>
 #include "isr.inc"
@@ -41,24 +42,24 @@
 ;*******************************************************************************
 isr_local_data UDATA_SHR
 w_buf RES 1
-s_buf RES 1
+;s_buf RES 1  ;assuming STATUS not used
 
 ;*******************************************************************************
 interrupt_vector CODE 0x04                                            ; 3
 ; enter interrupt service routine
-    isr_enter                                                         ; +4
+    isr_enter                                                         ; +2
 ; write outputs to PORTA and read inputs
     io_latch                                                          ; +4
 ; generate pwm signal                                                 ;min/typ/max
     pwm_step ;                                                        ;+11/11/20
 ; handle uart
-    uart_rx_sample                                                    ;+13/14/18
+    uart_rx_sample                                                    ;+8/9/13
 
 ; exit interrupt service routine
     ;isr_exit ; never reached, called by  uart_rx_sample
 
 
-;                                            ;total cycles: min=35 typ=36 max=49
+;                                            ;total cycles: min=28 typ=29 max=42
 ; never reached, added for convenient debugging
     movfw TMR2
 

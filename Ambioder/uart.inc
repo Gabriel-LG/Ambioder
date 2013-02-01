@@ -43,8 +43,8 @@ uart_rx_sample MACRO
     extern rx_stop_1_overflow, rx_error
     extern rx_jump
 
-    movlw HIGH($)
-    movwf PCLATH
+    ;movlw HIGH($) ;assuming PCLATH is always 0
+    ;movwf PCLATH  ;assuming PCLATH is always 0
     movfw rx_jump
     ;jump
     addwf PCL, F
