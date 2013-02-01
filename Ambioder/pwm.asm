@@ -79,16 +79,26 @@ pwm_step
     ;reset pwm step_count
     movfw pwm_period
     movwf step_count
-    ;reset color counters
+    ;clear the outputs
+    movlw ~((1<<IO_RED) | (1<<IO_GREEN) | (1 << IO_BLUE))
+    andwf io_buffer, F
+    ;reset red counter and set red output
     incf pwm_red, W
     movwf red_count
+    decfsz red_count, F
+    bsf io_buffer, IO_RED
+    ;reset green counter and set green output
     incf pwm_green, W
     movwf green_count
+    decfsz green_count, F
+    bsf io_buffer, IO_GREEN
+    ;reset blue counter and set blue output
     incf pwm_blue, W
     movwf blue_count
-    ;set the outputs
-    movlw b'00000111'
-    iorwf io_buffer, F
+    decfsz blue_count, F
+    bsf io_buffer, IO_BLUE
+    return
+
 pwm_loop
     ;decrease red_count and clear red output when 0 is reached
     decfsz red_count, F

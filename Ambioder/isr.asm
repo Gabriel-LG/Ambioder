@@ -57,7 +57,7 @@ interrupt_vector CODE 0x04
 ; write outputs to PORTA and read inputs
     io_latch                                                          ; +4
 ; generate pwm signal                                                 ;min/typ/max
-    call pwm_step ;                                                   ;+16/16/25
+    call pwm_step ;                                                   ;+16/16/22
 ; handle uart
     call uart_rx_tick                                                 ;+11/12/16
     ;call uart_tx_tick ;+12/12/15
@@ -71,7 +71,7 @@ interrupt_vector CODE 0x04
     swapf w_buf, F                                                    ; +1
     swapf w_buf, W                                                    ; +1
     retfie                                                            ; +2
-                                           ;total cycles: min=44 typ=45 max=58
+                                           ;total cycles: min=44 typ=45 max=55
 ; never reached, added for convenient debugging
     movfw TMR2
 
