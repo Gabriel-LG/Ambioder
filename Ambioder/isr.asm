@@ -28,11 +28,15 @@
 ; This is the "IO-loop" implementation. It assumes the interrupt is only
 ; triggered by TMR2 and that bank0 is selected.
 ;*******************************************************************************
+    ;only for access by isr_enter/isr_exit macros:
+    global w_buf, s_buf
+
 #include <P16F684.INC>
+#include "isr.inc"
 #include "iolatch.inc"
 #include "pwm.inc"
-    extern uart_rx_tick
-    extern uart_tx_tick
+#include "uart.inc"
+
 
 ;*******************************************************************************
 isr_local_data UDATA_SHR
@@ -40,35 +44,21 @@ w_buf RES 1
 s_buf RES 1
 
 ;*******************************************************************************
-interrupt_vector CODE 0x04
-; store the STATUS and W registers                                    ; 3
-    movwf w_buf                                                       ; +1
-    swapf STATUS, W                                                   ; +1
-    movwf s_buf                                                       ; +1
-
-; switch to bank0
-    ;bcf STATUS, RP0 ;assuming main routine stays in bank0
-
-; clear all interrupt flags
-    ;movlw b'11111000' ; assuming only TMR2IF
-    ;andwf INTCON, F ; assuming only TMR2IF
-    bcf  PIR1, TMR2IF                                                 ; +1
-
+interrupt_vector CODE 0x04                                            ; 3
+; enter interrupt service routine
+    isr_enter                                                         ; +4
 ; write outputs to PORTA and read inputs
     io_latch                                                          ; +4
 ; generate pwm signal                                                 ;min/typ/max
     pwm_step ;                                                        ;+11/11/20
 ; handle uart
-    call uart_rx_tick                                                 ;+11/12/16
-    ;call uart_tx_tick ;+12/12/15
+    uart_rx_sample                                                    ;+13/14/18
 
-; restore the STATUS and W registers
-    swapf s_buf, W                                                    ; +1
-    movwf STATUS                                                      ; +1
-    swapf w_buf, F                                                    ; +1
-    swapf w_buf, W                                                    ; +1
-    retfie                                                            ; +2
-                                           ;total cycles: min=43 typ=44 max=57
+; exit interrupt service routine
+    ;isr_exit ; never reached, called by  uart_rx_sample
+
+
+;                                            ;total cycles: min=35 typ=36 max=49
 ; never reached, added for convenient debugging
     movfw TMR2
 

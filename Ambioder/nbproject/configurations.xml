@@ -6,6 +6,8 @@
                    projectFiles="true">
       <itemPath>iolatch.inc</itemPath>
       <itemPath>uart.inc</itemPath>
+      <itemPath>pwm.inc</itemPath>
+      <itemPath>isr.inc</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -40,8 +42,8 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
         <languageToolchain>MPASMWIN</languageToolchain>
-        <languageToolchainVersion>5.48</languageToolchainVersion>
-        <platform>2</platform>
+        <languageToolchainVersion>5.47</languageToolchainVersion>
+        <platform>3</platform>
       </toolsSet>
       <compileType>
         <linkerTool>

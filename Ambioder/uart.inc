@@ -34,3 +34,63 @@ UART_RX_OVERFLOW equ 2
 ; the flags for uart_tx_state
 ;*******************************************************************************
 UART_TX_READY equ 0
+
+
+uart_rx_sample MACRO
+    extern rx_start_0, rx_start_1, rx_start_2
+    extern rx_data_0, rx_data_1, rx_data_2
+    extern rx_stop_0, rx_stop_1 
+    extern rx_stop_1_overflow, rx_error
+    extern rx_jump
+
+    movlw HIGH($)
+    movwf PCLATH
+    movfw rx_jump
+    ;jump
+    addwf PCL, F
+uart_rx_jumptable_entry_0
+    ;start bit
+    goto rx_start_0                                                ;rx_jump == 0
+    goto rx_start_1                                                ;rx_jump == 1
+    goto rx_start_2                                                ;rx_jump == 2
+    ;bit 0
+    goto rx_data_0                                                 ;rx_jump == 3
+    goto rx_data_1                                                 ;rx_jump == 4
+    goto rx_data_2                                                 ;rx_jump == 5
+    ;bit 1
+    goto rx_data_0                                                 ;rx_jump == 6
+    goto rx_data_1                                                 ;rx_jump == 7
+    goto rx_data_2                                                 ;rx_jump == 8
+    ;bit 2
+    goto rx_data_0                                                 ;rx_jump == 9
+    goto rx_data_1                                                ;rx_jump == 10
+    goto rx_data_2                                                ;rx_jump == 11
+    ;bit 3
+    goto rx_data_0                                                ;rx_jump == 12
+    goto rx_data_1                                                ;rx_jump == 13
+    goto rx_data_2                                                ;rx_jump == 14
+    ;bit 4
+    goto rx_data_0                                                ;rx_jump == 15
+    goto rx_data_1                                                ;rx_jump == 16
+    goto rx_data_2                                                ;rx_jump == 17
+    ;bit 5
+    goto rx_data_0                                                ;rx_jump == 18
+    goto rx_data_1                                                ;rx_jump == 19
+    goto rx_data_2                                                ;rx_jump == 20
+    ;bit 6
+    goto rx_data_0                                                ;rx_jump == 21
+    goto rx_data_1                                                ;rx_jump == 22
+    goto rx_data_2                                                ;rx_jump == 23
+    ;bit 7
+    goto rx_data_0                                                ;rx_jump == 24
+    goto rx_data_1                                                ;rx_jump == 25
+    goto rx_data_2                                                ;rx_jump == 26
+    ;stop bit
+    goto rx_stop_0                                                ;rx_jump == 27
+    goto rx_stop_1                                                ;rx_jump == 28
+    ;stop bit on overflow
+    goto rx_stop_1_overflow                                       ;rx_jump == 29
+    ;error
+    goto rx_error                                                 ;rx_jump == 30
+
+    ENDM

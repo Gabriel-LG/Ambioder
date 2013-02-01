@@ -39,7 +39,12 @@
 ;*******************************************************************************
     global uart_rx_flags, uart_rx_byte
     global uart_rx_init
-    global uart_rx_tick
+    ;only for access by uart_rx_sample macro:
+    global rx_start_0, rx_start_1, rx_start_2
+    global rx_data_0, rx_data_1, rx_data_2
+    global rx_stop_0, rx_stop_1
+    global rx_stop_1_overflow, rx_error
+    global rx_jump
 
 
 ;*******************************************************************************
@@ -48,6 +53,7 @@
 #include <P16F684.INC>
 #include "uart.inc"
 #include "iolatch.inc"
+#include "isr.inc"
     extern io_buffer
 
 ;*******************************************************************************
@@ -70,39 +76,39 @@ uart_rx_init
 rx_start_0
     btfsc io_buffer, IO_RX
     incf rx_jump, F
-    return
+    isr_exit
 
 rx_start_1
     btfss io_buffer, IO_RX
     goto rx_enter_error
     incf rx_jump, F
-    return
+    isr_exit
 
 rx_start_2
     incf rx_jump, F
-    return
+    isr_exit
 
 rx_data_0
     incf rx_jump, F
     rrf rx_buf, F
     bcf rx_buf, 7
-    return
+    isr_exit
 
 rx_data_1
     incf rx_jump, F
     btfss io_buffer, IO_RX ;set bit if pin is set
     bsf rx_buf, 7
-    return
+    isr_exit
 
 rx_data_2
     incf rx_jump, F
-    return
+    isr_exit
 
 rx_stop_0
     btfsc uart_rx_flags, UART_RX_DATA
     goto rx_enter_overflow
     incf rx_jump, F
-    return
+    isr_exit
 
 rx_stop_1
     btfsc io_buffer, IO_RX
@@ -111,86 +117,31 @@ rx_stop_1
     movf rx_buf, W
     movwf uart_rx_byte
     bsf uart_rx_flags, UART_RX_DATA
-    return
+    isr_exit
 
 rx_stop_1_overflow
     btfsc io_buffer, IO_RX
     goto rx_enter_error
     clrf rx_jump
-    return
+    isr_exit
 
 rx_error
     btfss uart_rx_flags, UART_RX_ERROR
     clrf rx_jump
-    return
+    isr_exit
 
 ; enter alternative flow: error
 rx_enter_error
     bsf uart_rx_flags, UART_RX_ERROR
-    movlw uart_rx_jumptable_entry_error - uart_rx_jumptable_entry_0
+    movlw d'30' ;see uart_rx_sample macro
     movwf rx_jump
-    return
+    isr_exit
 
 ; enter alternative flow: overflow
 rx_enter_overflow
     bsf uart_rx_flags, UART_RX_OVERFLOW
-    movlw uart_rx_jumptable_entry_overflow - uart_rx_jumptable_entry_0
+    movlw d'29' ;see uart_rx_sample macro
     movwf rx_jump
-    return
-
-;*******************************************************************************
-uart_rx_jumptable CODE 0x700
-uart_rx_tick
-    movlw HIGH($)
-    movwf PCLATH
-    movfw rx_jump
-    ;jump
-    addwf PCL, F
-uart_rx_jumptable_entry_0
-    ;start bit
-    goto rx_start_0
-    goto rx_start_1
-    goto rx_start_2
-    ;bit 0
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 1
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 2
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 3
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 4
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 5
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 6
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;bit 7
-    goto rx_data_0
-    goto rx_data_1
-    goto rx_data_2
-    ;stop bit
-    goto rx_stop_0
-    goto rx_stop_1
-    ;stop bit on overflow
-uart_rx_jumptable_entry_overflow
-    goto rx_stop_1_overflow
-    ;error
-uart_rx_jumptable_entry_error
-    goto rx_error
+    isr_exit
 
     END

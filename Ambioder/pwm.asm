@@ -32,6 +32,7 @@
 ;*******************************************************************************
     global pwm_init
     global pwm_period, pwm_red, pwm_green, pwm_blue
+    ;only for access by pwm_step macro:
     global step_count, red_count, green_count, blue_count
 ;*******************************************************************************
 ; Implementation

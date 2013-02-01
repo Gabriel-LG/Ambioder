@@ -19,7 +19,7 @@ endif
 endif
 
 # Environment
-MKDIR=mkdir -p
+MKDIR=gnumkdir -p
 RM=rm -f 
 MV=mv 
 CP=cp 
@@ -66,7 +66,7 @@ LDLIBSOPTIONS=
 FIXDEPS=fixDeps
 
 .build-conf:  ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Ambioder.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE} ${MAKE_OPTIONS} -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Ambioder.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=16f684
 MP_LINKER_DEBUG_OPTION=
@@ -76,86 +76,86 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 ${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/main.lst\\\" -e\\\"${OBJECTDIR}/main.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/main.o\\\" \\\"main.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
 	
 ${OBJECTDIR}/pwm.o: pwm.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/pwm.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/pwm.lst\\\" -e\\\"${OBJECTDIR}/pwm.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/pwm.o\\\" \\\"pwm.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/pwm.lst\" -e\"${OBJECTDIR}/pwm.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/pwm.o\" \"pwm.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/pwm.o"
 	
 ${OBJECTDIR}/uart_rx.o: uart_rx.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/uart_rx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/uart_rx.lst\\\" -e\\\"${OBJECTDIR}/uart_rx.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/uart_rx.o\\\" \\\"uart_rx.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_rx.lst\" -e\"${OBJECTDIR}/uart_rx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_rx.o\" \"uart_rx.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/uart_rx.o"
 	
 ${OBJECTDIR}/uart_tx.o: uart_tx.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/uart_tx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/uart_tx.lst\\\" -e\\\"${OBJECTDIR}/uart_tx.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/uart_tx.o\\\" \\\"uart_tx.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_tx.lst\" -e\"${OBJECTDIR}/uart_tx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_tx.o\" \"uart_tx.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/uart_tx.o"
 	
 ${OBJECTDIR}/isr.o: isr.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/isr.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/isr.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/isr.lst\\\" -e\\\"${OBJECTDIR}/isr.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/isr.o\\\" \\\"isr.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/isr.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/isr.lst\" -e\"${OBJECTDIR}/isr.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/isr.o\" \"isr.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/isr.o"
 	
 ${OBJECTDIR}/iolatch.o: iolatch.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/iolatch.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/iolatch.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/iolatch.lst\\\" -e\\\"${OBJECTDIR}/iolatch.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/iolatch.o\\\" \\\"iolatch.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/iolatch.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/iolatch.lst\" -e\"${OBJECTDIR}/iolatch.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/iolatch.o\" \"iolatch.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/iolatch.o"
 	
 ${OBJECTDIR}/boot.o: boot.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/boot.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/boot.lst\\\" -e\\\"${OBJECTDIR}/boot.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/boot.o\\\" \\\"boot.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/boot.lst\" -e\"${OBJECTDIR}/boot.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/boot.o\" \"boot.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/boot.o"
 	
 else
 ${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/main.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/main.lst\\\" -e\\\"${OBJECTDIR}/main.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/main.o\\\" \\\"main.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
 	
 ${OBJECTDIR}/pwm.o: pwm.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/pwm.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/pwm.lst\\\" -e\\\"${OBJECTDIR}/pwm.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/pwm.o\\\" \\\"pwm.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/pwm.lst\" -e\"${OBJECTDIR}/pwm.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/pwm.o\" \"pwm.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/pwm.o"
 	
 ${OBJECTDIR}/uart_rx.o: uart_rx.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/uart_rx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/uart_rx.lst\\\" -e\\\"${OBJECTDIR}/uart_rx.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/uart_rx.o\\\" \\\"uart_rx.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_rx.lst\" -e\"${OBJECTDIR}/uart_rx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_rx.o\" \"uart_rx.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/uart_rx.o"
 	
 ${OBJECTDIR}/uart_tx.o: uart_tx.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/uart_tx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/uart_tx.lst\\\" -e\\\"${OBJECTDIR}/uart_tx.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/uart_tx.o\\\" \\\"uart_tx.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_tx.lst\" -e\"${OBJECTDIR}/uart_tx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_tx.o\" \"uart_tx.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/uart_tx.o"
 	
 ${OBJECTDIR}/isr.o: isr.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/isr.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/isr.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/isr.lst\\\" -e\\\"${OBJECTDIR}/isr.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/isr.o\\\" \\\"isr.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/isr.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/isr.lst\" -e\"${OBJECTDIR}/isr.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/isr.o\" \"isr.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/isr.o"
 	
 ${OBJECTDIR}/iolatch.o: iolatch.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/iolatch.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/iolatch.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/iolatch.lst\\\" -e\\\"${OBJECTDIR}/iolatch.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/iolatch.o\\\" \\\"iolatch.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/iolatch.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/iolatch.lst\" -e\"${OBJECTDIR}/iolatch.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/iolatch.o\" \"iolatch.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/iolatch.o"
 	
 ${OBJECTDIR}/boot.o: boot.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/boot.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_AS_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/boot.lst\\\" -e\\\"${OBJECTDIR}/boot.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/boot.o\\\" \\\"boot.asm\\\" 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/boot.lst\" -e\"${OBJECTDIR}/boot.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/boot.o\" \"boot.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/boot.o"
 	
 endif
@@ -188,7 +188,7 @@ endif
 # Enable dependency checking
 .dep.inc: .depcheck-impl
 
-DEPFILES=$(shell "${PATH_TO_IDE_BIN}"mplabwildcard ${POSSIBLE_DEPFILES})
+DEPFILES=$(shell mplabwildcard ${POSSIBLE_DEPFILES})
 ifneq (${DEPFILES},)
 include ${DEPFILES}
 endif

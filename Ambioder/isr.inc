@@ -24,39 +24,33 @@
 ; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ;*******************************************************************************
-pwm_step MACRO
-    extern pwm_period, pwm_red, pwm_green, pwm_blue
-    extern step_count, red_count, green_count, blue_count
-    local pwm_loop
-    ;decrease step_count and setup loop when 0 is reached
-    decfsz step_count, F
-    goto pwm_loop
-    ;reset pwm step_count
-    movfw pwm_period
-    movwf step_count
-    ;reset red counter
-    incf pwm_red, W
-    movwf red_count
-    ;reset green counter
-    incf pwm_green, W
-    movwf green_count
-    ;reset blue counter and set blue output
-    incf pwm_blue, W
-    movwf blue_count
-    ;set the outputs
-    movlw (1<<IO_RED) | (1<<IO_GREEN) | (1 << IO_BLUE)
-    iorwf io_buffer, F
-pwm_loop
-    movlw ~((1<<IO_RED) | (1<<IO_GREEN) | (1 << IO_BLUE))
-    ;decrease red_count and clear red if 0
-    decfsz red_count, F
-    iorlw 1<<IO_RED
-    ;decrease green_count and clear green if 0
-    decfsz green_count, F
-    iorlw 1<<IO_GREEN
-    ;decrease blue_count and clear blue if 0
-    decfsz blue_count, F
-    iorlw 1<<IO_BLUE
+isr_enter MACRO
+#ifndef w_buf
+    extern w_buf, s_buf
+#endif
+; store the STATUS and W registers
+    movwf w_buf
+    swapf STATUS, W
+    movwf s_buf
 
-    andwf io_buffer, F
+; switch to bank0
+    ;bcf STATUS, RP0 ;assuming main routine stays in bank0
+
+; clear all interrupt flags
+    ;movlw b'11111000' ; assuming only TMR2IF
+    ;andwf INTCON, F ; assuming only TMR2IF
+    clrf  PIR1
+    ENDM
+
+;*******************************************************************************
+isr_exit MACRO
+#ifndef w_buf
+    extern w_buf, s_buf
+#endif
+; restore the STATUS and W registers
+    swapf s_buf, W
+    movwf STATUS
+    swapf w_buf, F
+    swapf w_buf, W
+    retfie
     ENDM
