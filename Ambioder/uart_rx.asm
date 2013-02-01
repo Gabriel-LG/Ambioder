@@ -67,78 +67,78 @@ uart_rx_init
     return
 
 ;*******************************************************************************
-rx_idle
-    ; halt uart rx while error flag is set
-    btfsc uart_rx_flags, UART_RX_ERROR
+rx_start_0
+    btfsc io_buffer, IO_RX
+    incf rx_jump, F
     return
-    ; stay idle while rx pin is low
+
+rx_start_1
     btfss io_buffer, IO_RX
-    return
-    ; increase jumptable entry
+    goto rx_enter_error
     incf rx_jump, F
     return
-rx_start
-    ; increase jumptable entry
-    incf rx_jump, F
-    ; set error if start bit is not encountered
-    btfss io_buffer, IO_RX
-    bsf uart_rx_flags, UART_RX_ERROR
-    ; Halt rx when error is received
-    btfsc uart_rx_flags, UART_RX_ERROR
-    clrf rx_jump
-    return
-rx_edge
-    ; increase jumptable entry
+
+rx_start_2
     incf rx_jump, F
     return
-rx_level
-    ; increase jumptable entry
+
+rx_data_0
     incf rx_jump, F
-    ; shift in a 1 on low and a 0 on high
-    bcf STATUS, C
-    rrf rx_buf, F ; shift and
+    rrf rx_buf, F
+    bcf rx_buf, 7
+    return
+
+rx_data_1
+    incf rx_jump, F
     btfss io_buffer, IO_RX ;set bit if pin is set
     bsf rx_buf, 7
     return
-rx_stop
-    ; clear jumptable entry
-    clrf rx_jump
-    ; set error if stop bit is not encountered
+
+rx_data_2
+    incf rx_jump, F
+    return
+
+rx_stop_0
+    btfsc uart_rx_flags, UART_RX_DATA
+    goto rx_enter_overflow
+    incf rx_jump, F
+    return
+
+rx_stop_1
     btfsc io_buffer, IO_RX
-    bsf uart_rx_flags, UART_RX_ERROR
-    ; halt rx when error is received
-    btfsc uart_rx_flags, UART_RX_ERROR
-    return
-    ; check for overflow
-    btfsc uart_rx_flags, UART_RX_DATA
-    bsf uart_rx_flags, UART_RX_OVERFLOW
-    ; discard buffer on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    return
-    movfw rx_buf
-    movwf uart_rx_byte
-    ; set the data ready flag
-    bsf uart_rx_flags, UART_RX_DATA
-    return
-
-
-
-rx_done
-    ; set jumptable entry back to idle
+    goto rx_enter_error
     clrf rx_jump
-    ; check for overflow
-    btfsc uart_rx_flags, UART_RX_DATA
-    bsf uart_rx_flags, UART_RX_OVERFLOW
-    ; discard buffer on overflow
-    btfsc uart_rx_flags, UART_RX_OVERFLOW
-    return
-    ;copy rx_buf to uart_rx_byte
-    movfw rx_buf 
+    movf rx_buf, W
     movwf uart_rx_byte
-    ; set the data ready flag
     bsf uart_rx_flags, UART_RX_DATA
     return
 
+rx_stop_1_overflow
+    btfsc io_buffer, IO_RX
+    goto rx_enter_error
+    clrf rx_jump
+    return
+
+rx_error
+    btfss uart_rx_flags, UART_RX_ERROR
+    clrf rx_jump
+    return
+
+; enter alternative flow: error
+rx_enter_error
+    bsf uart_rx_flags, UART_RX_ERROR
+    movlw uart_rx_jumptable_entry_error - uart_rx_jumptable_entry_0
+    movwf rx_jump
+    return
+
+; enter alternative flow: overflow
+rx_enter_overflow
+    bsf uart_rx_flags, UART_RX_OVERFLOW
+    movlw uart_rx_jumptable_entry_overflow - uart_rx_jumptable_entry_0
+    movwf rx_jump
+    return
+
+;*******************************************************************************
 uart_rx_jumptable CODE 0x700
 uart_rx_tick
     movlw HIGH($)
@@ -146,45 +146,51 @@ uart_rx_tick
     movfw rx_jump
     ;jump
     addwf PCL, F
-    ;idle
-    goto rx_idle
+uart_rx_jumptable_entry_0
     ;start bit
-    goto rx_start
-    goto rx_edge
+    goto rx_start_0
+    goto rx_start_1
+    goto rx_start_2
     ;bit 0
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 1
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 2
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 3
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 4
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 5
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 6
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;bit 7
-    goto rx_edge
-    goto rx_level
-    goto rx_edge
+    goto rx_data_0
+    goto rx_data_1
+    goto rx_data_2
     ;stop bit
-    goto rx_edge
-    goto rx_stop
+    goto rx_stop_0
+    goto rx_stop_1
+    ;stop bit on overflow
+uart_rx_jumptable_entry_overflow
+    goto rx_stop_1_overflow
+    ;error
+uart_rx_jumptable_entry_error
+    goto rx_error
 
     END

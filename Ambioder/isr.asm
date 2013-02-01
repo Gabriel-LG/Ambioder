@@ -59,7 +59,7 @@ interrupt_vector CODE 0x04
 ; generate pwm signal                                                 ;min/typ/max
     call pwm_step ;                                                   ;+16/16/25
 ; handle uart
-    call uart_rx_tick                                                 ;+11/13/22
+    call uart_rx_tick                                                 ;+11/12/16
     ;call uart_tx_tick ;+12/12/15
 
 ; swith to bank0
@@ -71,7 +71,7 @@ interrupt_vector CODE 0x04
     swapf w_buf, F                                                    ; +1
     swapf w_buf, W                                                    ; +1
     retfie                                                            ; +2
-                                           ;total cycles: min=44 typ=46 max=64
+                                           ;total cycles: min=44 typ=45 max=58
 ; never reached, added for convenient debugging
     movfw TMR2
 
