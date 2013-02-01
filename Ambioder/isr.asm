@@ -30,9 +30,9 @@
 ;*******************************************************************************
 #include <P16F684.INC>
 #include "iolatch.inc"
+#include "pwm.inc"
     extern uart_rx_tick
     extern uart_tx_tick
-    extern pwm_step
 
 ;*******************************************************************************
 isr_local_data UDATA_SHR
@@ -57,13 +57,10 @@ interrupt_vector CODE 0x04
 ; write outputs to PORTA and read inputs
     io_latch                                                          ; +4
 ; generate pwm signal                                                 ;min/typ/max
-    call pwm_step ;                                                   ;+16/16/22
+    pwm_step ;                                                        ;+11/11/20
 ; handle uart
     call uart_rx_tick                                                 ;+11/12/16
     ;call uart_tx_tick ;+12/12/15
-
-; swith to bank0
-    ;bcf STATUS, RP0 ;assuming interrupt routines stay in bank0
 
 ; restore the STATUS and W registers
     swapf s_buf, W                                                    ; +1
@@ -71,7 +68,7 @@ interrupt_vector CODE 0x04
     swapf w_buf, F                                                    ; +1
     swapf w_buf, W                                                    ; +1
     retfie                                                            ; +2
-                                           ;total cycles: min=44 typ=45 max=55
+                                           ;total cycles: min=43 typ=44 max=57
 ; never reached, added for convenient debugging
     movfw TMR2
 

@@ -31,9 +31,8 @@
 ; * Write to pwm_red/green/blue to alter the ductycycles.
 ;*******************************************************************************
     global pwm_init
-    global pwm_step
     global pwm_period, pwm_red, pwm_green, pwm_blue
-
+    global step_count, red_count, green_count, blue_count
 ;*******************************************************************************
 ; Implementation
 ;*******************************************************************************
@@ -72,46 +71,4 @@ pwm_init
     return
 
 ;*******************************************************************************
-pwm_step
-    ;decrease step_count and setup loop when 0 is reached
-    decfsz step_count, F
-    goto pwm_loop
-    ;reset pwm step_count
-    movfw pwm_period
-    movwf step_count
-    ;clear the outputs
-    movlw ~((1<<IO_RED) | (1<<IO_GREEN) | (1 << IO_BLUE))
-    andwf io_buffer, F
-    ;reset red counter and set red output
-    incf pwm_red, W
-    movwf red_count
-    decfsz red_count, F
-    bsf io_buffer, IO_RED
-    ;reset green counter and set green output
-    incf pwm_green, W
-    movwf green_count
-    decfsz green_count, F
-    bsf io_buffer, IO_GREEN
-    ;reset blue counter and set blue output
-    incf pwm_blue, W
-    movwf blue_count
-    decfsz blue_count, F
-    bsf io_buffer, IO_BLUE
-    return
-
-pwm_loop
-    ;decrease red_count and clear red output when 0 is reached
-    decfsz red_count, F
-    goto $+2
-    bcf io_buffer, IO_RED
-    ;decrease green_count and clear green output when 0 is reached
-    decfsz green_count, F
-    goto $+2
-    bcf io_buffer, IO_GREEN
-    ;decrease blue_count and clear blue output when 0 is reached
-    decfsz blue_count, F
-    goto $+2
-    bcf io_buffer, IO_BLUE
-    return
-
     END
