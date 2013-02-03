@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/uart_rx.o.d ${OBJECTDIR}/uart_tx.o.d ${OBJECTDIR}/isr.o.d ${OBJECTDIR}/iolatch.o.d ${OBJECTDIR}/boot.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/uart_rx.o.d ${OBJECTDIR}/uart_tx.o.d ${OBJECTDIR}/isr.o.d ${OBJECTDIR}/iolatch.o.d ${OBJECTDIR}/boot.o.d ${OBJECTDIR}/startup.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o
 
 
 CFLAGS=
@@ -115,6 +115,12 @@ ${OBJECTDIR}/boot.o: boot.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/boot.lst\" -e\"${OBJECTDIR}/boot.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/boot.o\" \"boot.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/boot.o"
 	
+${OBJECTDIR}/startup.o: startup.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/startup.o.d 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/startup.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/startup.lst\" -e\"${OBJECTDIR}/startup.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/startup.o\" \"startup.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/startup.o"
+	
 else
 ${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -157,6 +163,12 @@ ${OBJECTDIR}/boot.o: boot.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/boot.o.d 
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/boot.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/boot.lst\" -e\"${OBJECTDIR}/boot.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/boot.o\" \"boot.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/boot.o"
+	
+${OBJECTDIR}/startup.o: startup.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/startup.o.d 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/startup.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/startup.lst\" -e\"${OBJECTDIR}/startup.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/startup.o\" \"startup.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/startup.o"
 	
 endif
 

@@ -1,0 +1,98 @@
+## SCL Builder Setup File: Do not edit!!
+
+## VERSION: X.BETA.RC6
+## FORMAT:  v2.00.01
+## DEVICE:  PIC16F684
+
+## PINREGACTIONS
+cyc
+No Repeat
+RA3
+--
+0
+1
+--
+104
+0
+--
+208
+0
+--
+312
+0
+--
+416
+0
+--
+520
+1
+--
+624
+0
+--
+728
+0
+--
+832
+1
+--
+936
+0
+--
+1040
+1
+--
+1144
+0
+--
+1248
+0
+--
+1352
+0
+--
+1456
+0
+--
+1560
+0
+--
+1664
+0
+--
+1768
+0
+--
+1872
+1
+--
+1976
+0
+--
+&
+## ADVPINREGACTIONS
+--
+&
+--
+COND2
+Any
+
+
+
+0
+cyc
+
+--
+&
+## CLOCK
+&
+## STIMULUSFILE
+&
+## RESPONSEFILE
+&
+## ASYNCH
+&
+## ADVANCEDSCL
+
+1
+&

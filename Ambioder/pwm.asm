@@ -61,14 +61,11 @@ pwm_init
     movlw 1
     movwf step_count
     ; set initial dutycycles
-    movlw d'63'
+    movlw h'ff'
     movwf pwm_period
-    movlw d'1'
-    movwf pwm_red
-    movlw d'32'
-    movwf pwm_green
-    movlw d'62'
-    movwf pwm_blue
+    clrf pwm_red
+    clrf pwm_green
+    clrf pwm_blue
     return
 
 ;*******************************************************************************

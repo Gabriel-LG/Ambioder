@@ -25,7 +25,7 @@
 
 ;*******************************************************************************
 ; the main program
-; mainloop is the entrypoint
+; command_loop is the entrypoint
 ;
 ; **** BIG FAT WARNING ****
 ; - The ISR corrupts the STATUS register, this register can not be used
@@ -42,7 +42,7 @@
     extern uart_rx_flags, uart_rx_byte
     extern uart_tx_flags, uart_tx_byte
     extern pwm_period, pwm_red, pwm_green, pwm_blue
-
+    extern startup
  
 ;*******************************************************************************
     UDATA
@@ -52,17 +52,10 @@ rx_green RES 1
 rx_blue RES 1
 
 
+
 ;*******************************************************************************
-; This macro attempts to receive a data nibble from the uart. On success the
-; address nibble is cleared from uart_rx_byte. On failure uart_rx_byte is not
-; modified.
-; - expectedAddress must be the value of the most significant (address) nibble
-; - onFailure must be the label to jump to on failure. This is done if the
-;   address nibble does not match the expected address, or if the uart
-;   encounters an error or overflow.
-;*******************************************************************************
-receive macro expectAddress, onFailure
-    local loop, fail
+receive_byte MACRO onFailure
+    local loop
 loop
     ; failure on rx error
     btfsc uart_rx_flags, UART_RX_ERROR
@@ -73,73 +66,177 @@ loop
     ; loop until received
     btfss uart_rx_flags, UART_RX_DATA
     goto loop
+    ENDM
 
-    movlw expectAddress << 4
-    xorwf uart_rx_byte, F
-    btfsc uart_rx_byte, 4
-    goto fail
-    btfsc uart_rx_byte, 5
-    goto fail
-    btfsc uart_rx_byte, 6
-    goto fail
-    btfsc uart_rx_byte, 7
-    goto fail
-    goto $+3
-fail
-    xorwf uart_rx_byte, F
-    goto onFailure
-    endm
 
 ;*******************************************************************************
     CODE
 mainloop
+    call startup
+
+reset_command_loop
     clrf uart_rx_flags
 
 receive_start
-    movf pwm_period, W
+;**** period/red most significant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+parse_period
+    ; set rx_period to current pwm_period value
+    movfw pwm_period
     movwf rx_period
-    receive 2, receive_period
+    ; restart if b'00x0xxxx' was not received
+    btfsc uart_rx_byte, 4
+    goto reset_command_loop
+    btfsc uart_rx_byte, 6
+    goto reset_command_loop
+    btfsc uart_rx_byte, 7
+    goto reset_command_loop
+    ; parse red value if b'0010xxxx' was received, continue otherwise
+    btfsc uart_rx_byte, 5
     goto parse_red
-receive_period
-    nop ; for debugging, because mplabx cannot set breakpoints in macros
-    receive 0, mainloop
+    ; copy rx_period most significant nibble
     swapf uart_rx_byte, W
+    andlw h'F0'
+    movfw rx_period
+    ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
-    movwf rx_period
-    receive 1, receive_start
-    movf uart_rx_byte, W
-    bcf uart_rx_flags, UART_RX_DATA
+
+;**** period least siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0001xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfsc uart_rx_byte, 6
+    goto parse_period
+    btfsc uart_rx_byte, 5
+    goto parse_period
+    btfss uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
+    movfw uart_rx_byte
+    andlw h'0F'
     iorwf rx_period, F
+    ; clear data flag
+    bcf uart_rx_flags, UART_RX_DATA
 
-    receive 2, receive_start
+;**** red most siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
 parse_red
+    ; restart if b'0010xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfsc uart_rx_byte, 6
+    goto parse_period
+    btfss uart_rx_byte, 5
+    goto parse_period
+    btfsc uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
     swapf uart_rx_byte, W
-    bcf uart_rx_flags, UART_RX_DATA
+    andlw h'F0'
     movwf rx_red
-    receive 3, receive_start
-    movf uart_rx_byte, W
+    ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
+
+;**** red least siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0011xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfsc uart_rx_byte, 6
+    goto parse_period
+    btfss uart_rx_byte, 5
+    goto parse_period
+    btfss uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
+    movfw uart_rx_byte
+    andlw h'0F'
     iorwf rx_red, F
-
-    receive 4, receive_start
-    swapf uart_rx_byte, W
+    ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
+
+;**** green most siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0100xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfss uart_rx_byte, 6
+    goto parse_period
+    btfsc uart_rx_byte, 5
+    goto parse_period
+    btfsc uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
+    swapf uart_rx_byte, W
+    andlw h'F0'
     movwf rx_green
-    receive 5, receive_start
-    movf uart_rx_byte, W
+    ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
+
+;**** green least siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0101xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfss uart_rx_byte, 6
+    goto parse_period
+    btfsc uart_rx_byte, 5
+    goto parse_period
+    btfss uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
+    movfw uart_rx_byte
+    andlw h'0F'
     iorwf rx_green, F
+    ; clear data flag
+    bcf uart_rx_flags, UART_RX_DATA
 
-    receive 6, receive_start
+;**** blue most siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0110xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfss uart_rx_byte, 6
+    goto parse_period
+    btfss uart_rx_byte, 5
+    goto parse_period
+    btfsc uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
     swapf uart_rx_byte, W
-    bcf uart_rx_flags, UART_RX_DATA
+    andlw h'F0'
     movwf rx_blue
-    receive 7, receive_start
-    movf uart_rx_byte, W
+    ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
-    iorwf rx_blue, F
 
-    ;set colors
+;**** blue least siginficant nibble: *****
+    ; receive byte from uart, restart on failure
+    receive_byte mainloop
+    ; restart if b'0111xxxx' was not received
+    btfsc uart_rx_byte, 7
+    goto parse_period
+    btfss uart_rx_byte, 6
+    goto parse_period
+    btfss uart_rx_byte, 5
+    goto parse_period
+    btfss uart_rx_byte, 4
+    goto parse_period
+    ; copy rx_period least significant nibble
+    movfw uart_rx_byte
+    andlw h'0F'
+    iorwf rx_blue, F
+    ; clear data flag
+    bcf uart_rx_flags, UART_RX_DATA
+
+;**** latch values to pwm_controller ****
     movfw rx_period
     movwf pwm_period
     movfw rx_red
@@ -150,4 +247,5 @@ parse_red
     movwf pwm_blue
 
     goto receive_start
+    return ; never called
     END

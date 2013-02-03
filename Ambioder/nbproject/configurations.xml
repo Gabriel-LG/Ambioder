@@ -24,6 +24,7 @@
       <itemPath>isr.asm</itemPath>
       <itemPath>iolatch.asm</itemPath>
       <itemPath>boot.asm</itemPath>
+      <itemPath>startup.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
