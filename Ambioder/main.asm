@@ -80,7 +80,7 @@ reset_command_loop
 receive_start
 ;**** period/red most significant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
 parse_period
     ; set rx_period to current pwm_period value
     movfw pwm_period
@@ -104,7 +104,7 @@ parse_period
 
 ;**** period least siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0001xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
@@ -123,7 +123,7 @@ parse_period
 
 ;**** red most siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
 parse_red
     ; restart if b'0010xxxx' was not received
     btfsc uart_rx_byte, 7
@@ -143,7 +143,7 @@ parse_red
 
 ;**** red least siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0011xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
@@ -162,7 +162,7 @@ parse_red
 
 ;**** green most siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0100xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
@@ -181,7 +181,7 @@ parse_red
 
 ;**** green least siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0101xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
@@ -200,7 +200,7 @@ parse_red
 
 ;**** blue most siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0110xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
@@ -219,7 +219,7 @@ parse_red
 
 ;**** blue least siginficant nibble: *****
     ; receive byte from uart, restart on failure
-    receive_byte mainloop
+    receive_byte reset_command_loop
     ; restart if b'0111xxxx' was not received
     btfsc uart_rx_byte, 7
     goto parse_period
