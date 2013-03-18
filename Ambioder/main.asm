@@ -98,7 +98,7 @@ parse_period
     ; copy rx_period most significant nibble
     swapf uart_rx_byte, W
     andlw h'F0'
-    movfw rx_period
+    movwf rx_period
     ; clear data flag
     bcf uart_rx_flags, UART_RX_DATA
 
