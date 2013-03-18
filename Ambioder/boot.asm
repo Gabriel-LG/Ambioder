@@ -77,8 +77,8 @@ initialize
     bcf PIR1, TMR2IF
     bsf STATUS, RP0 ; bank1
     bsf PIE1, TMR2IE; enable timer1 interrupt
-    ;movlw d'69' ; 9600hz
-    movlw d'35' ; 19200hz
+    ;movlw d'68' ; 9600hz
+    movlw d'34' ; 19200hz
     movwf PR2
     bcf STATUS, RP0 ; bank0
     movlw b'00000100' ; Finstr, 1:1, on
