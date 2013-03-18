@@ -31,7 +31,7 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p><a href="http://youtu.be/GnowkudymDQ"><img src="https://raw.github.com/wiki/gabriel-lg/Ambioder/images/video.png" alt="Ambioder demonstration video"></a><br>
+        <p><a href="http://youtu.be/GyrZ5HvOXz0"><img src="https://raw.github.com/wiki/gabriel-lg/Ambioder/images/video.png" alt="Ambioder demonstration video"></a><br>
 All you need is a very small hardware modification, a 5V RS232 port and access to a PIC programmer.<br><em><strong>WARNING:</strong></em> after reprogramming your Dioder, its original functionality will be lost.</p>
 
 <h2>Intro</h2>
@@ -91,22 +91,21 @@ Every UART error or unexpected RX byte, will result in the main-loop restarting.
 <h3>Implementation</h3>
 
 <p>My implementation provides a UART receiver, an RGB PWM generator and a main-loop implementing my protocol. I also implemented a UART transmitter, that can be activated to use any PORTA output (this transmitter is not used right now).<br>
-The UART receiver functions at 9600/8N1, with a 1-byte buffer, the baud-rate is configurable by changing the timer settings.<br>
-The RGB PWM generator can generate from 16 Million colors at 113Hz, to 8 colors at 29kHz. The PWM generator is also buffered, so it will never flicker when changing colors.<br>
-I profiled the execution paths for the IO-loop, and came to a worst-case scenario where 60 instructions are consumed per tick (including interrupt entry and return) and 44 in a typical scenario. This leaves more than enough CPU cycles to execute the main-loop concurrently. So I can state that Ambioder is a hard-real-time system.</p>
+The UART receiver functions at 19200/8N1, with a 1-byte buffer, the baud-rate is configurable by changing the timer settings.<br>
+The RGB PWM generator can generate from 16 Million colors at 223Hz, to 8 colors at 57kHz. The PWM generator is also buffered, so it will never flicker when changing colors.    </p>
 
 <h2>The boblight implementation</h2>
 
-<p>To control the Ambioder device, I extended the Boblight project with Ambioder support.  </p>
+<p>To control the Ambioder device, <a href="https://github.com/Gabriel-LG/boblight-ambioder">I extended the Boblight project with Ambioder support.</a>  </p>
 
 <h1>The result</h1>
 
-<p>For my first field test, I used a previous version of Ambioder, limited to 262.144 colors@453Hz. The effect was pretty cool if I may say so myself. Although I thought that 18-bit (262.144) colors would be more than enough, I do notice the transitions between the darkest shades. Also I was worried that the limited 453Hz PWM frequency would produce a flickering effect. But I could only notice some flickering when looking directly into the LEDs, and not at all when the light is diffused on the wall.</p>
+<p>For my first field test, I used a previous version of Ambioder, limited to 262.144 colors (9600 baud). The effect was pretty nice, Although I could notice the transitions between the darkest shades.<br>
+So I optimized my code to do 19200 baud and up to 16 million colors. </p>
 
 <h2>The future</h2>
 
-<p>Although I was very pleased with the result, I revisited the  serial protocol to allow for 8-bit dutycycles.<br>
-I am still worried about the  PWM frequency dropping too low when using 21-bit/24-bit colors at 226Hz/113Hz. Therefore I will attempt to double the the tick frequency by optimizing the IO-loop. If that fails, then I will increase the tick frequency to 4x or 5x the UART baud-rate.</p>
+<p>I am going to install my Ambioder on my mediacenter and test run it for a few days, before publishing my work.</p>
       </section>
     </div>
 
