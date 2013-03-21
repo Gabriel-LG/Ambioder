@@ -6,8 +6,6 @@
                    projectFiles="true">
       <itemPath>iolatch.inc</itemPath>
       <itemPath>uart.inc</itemPath>
-      <itemPath>pwm.inc</itemPath>
-      <itemPath>isr.inc</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,12 +17,11 @@
                    projectFiles="true">
       <itemPath>main.asm</itemPath>
       <itemPath>pwm.asm</itemPath>
-      <itemPath>uart_rx.asm</itemPath>
-      <itemPath>uart_tx.asm</itemPath>
       <itemPath>isr.asm</itemPath>
       <itemPath>iolatch.asm</itemPath>
       <itemPath>boot.asm</itemPath>
       <itemPath>startup.asm</itemPath>
+      <itemPath>uart.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

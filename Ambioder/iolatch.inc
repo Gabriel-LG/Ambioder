@@ -33,7 +33,6 @@ IO_RED equ 2
 IO_GREEN equ 0
 IO_BLUE equ 1
 IO_RX equ 3
-IO_TX equ 0
 
 ;*******************************************************************************
 io_latch MACRO

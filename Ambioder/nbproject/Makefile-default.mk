@@ -45,11 +45,11 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/uart_rx.o.d ${OBJECTDIR}/uart_tx.o.d ${OBJECTDIR}/isr.o.d ${OBJECTDIR}/iolatch.o.d ${OBJECTDIR}/boot.o.d ${OBJECTDIR}/startup.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o ${OBJECTDIR}/uart.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/pwm.o.d ${OBJECTDIR}/isr.o.d ${OBJECTDIR}/iolatch.o.d ${OBJECTDIR}/boot.o.d ${OBJECTDIR}/startup.o.d ${OBJECTDIR}/uart.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/uart_rx.o ${OBJECTDIR}/uart_tx.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/pwm.o ${OBJECTDIR}/isr.o ${OBJECTDIR}/iolatch.o ${OBJECTDIR}/boot.o ${OBJECTDIR}/startup.o ${OBJECTDIR}/uart.o
 
 
 CFLAGS=
@@ -85,18 +85,6 @@ ${OBJECTDIR}/pwm.o: pwm.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/pwm.lst\" -e\"${OBJECTDIR}/pwm.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/pwm.o\" \"pwm.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/pwm.o"
 	
-${OBJECTDIR}/uart_rx.o: uart_rx.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/uart_rx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_rx.lst\" -e\"${OBJECTDIR}/uart_rx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_rx.o\" \"uart_rx.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/uart_rx.o"
-	
-${OBJECTDIR}/uart_tx.o: uart_tx.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/uart_tx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_tx.lst\" -e\"${OBJECTDIR}/uart_tx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_tx.o\" \"uart_tx.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/uart_tx.o"
-	
 ${OBJECTDIR}/isr.o: isr.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/isr.o.d 
@@ -121,6 +109,12 @@ ${OBJECTDIR}/startup.o: startup.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/startup.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/startup.lst\" -e\"${OBJECTDIR}/startup.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/startup.o\" \"startup.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/startup.o"
 	
+${OBJECTDIR}/uart.o: uart.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/uart.o.d 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG  -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart.lst\" -e\"${OBJECTDIR}/uart.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart.o\" \"uart.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/uart.o"
+	
 else
 ${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -133,18 +127,6 @@ ${OBJECTDIR}/pwm.o: pwm.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/pwm.o.d 
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/pwm.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/pwm.lst\" -e\"${OBJECTDIR}/pwm.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/pwm.o\" \"pwm.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/pwm.o"
-	
-${OBJECTDIR}/uart_rx.o: uart_rx.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/uart_rx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_rx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_rx.lst\" -e\"${OBJECTDIR}/uart_rx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_rx.o\" \"uart_rx.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/uart_rx.o"
-	
-${OBJECTDIR}/uart_tx.o: uart_tx.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/uart_tx.o.d 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart_tx.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart_tx.lst\" -e\"${OBJECTDIR}/uart_tx.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart_tx.o\" \"uart_tx.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/uart_tx.o"
 	
 ${OBJECTDIR}/isr.o: isr.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -169,6 +151,12 @@ ${OBJECTDIR}/startup.o: startup.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/startup.o.d 
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/startup.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/startup.lst\" -e\"${OBJECTDIR}/startup.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/startup.o\" \"startup.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/startup.o"
+	
+${OBJECTDIR}/uart.o: uart.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/uart.o.d 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/uart.err" $(SILENT) -rsi ${MP_CC_DIR}  -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/uart.lst\" -e\"${OBJECTDIR}/uart.err\" $(ASM_OPTIONS)   -o\"${OBJECTDIR}/uart.o\" \"uart.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/uart.o"
 	
 endif
 

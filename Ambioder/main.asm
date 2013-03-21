@@ -40,7 +40,6 @@
 ;*******************************************************************************
 #include "uart.inc"
     extern uart_rx_flags, uart_rx_byte
-    extern uart_tx_flags, uart_tx_byte
     extern pwm_period, pwm_red, pwm_green, pwm_blue
     extern startup
  

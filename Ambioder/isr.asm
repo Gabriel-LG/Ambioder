@@ -33,11 +33,11 @@
     ;global s_buf     ;assuming STATUS not used
 
 #include <P16F684.INC>
-#include "isr.inc"
 #include "iolatch.inc"
-#include "pwm.inc"
 #include "uart.inc"
 
+    extern uart_rx_sample
+    extern pwm_step
 
 ;*******************************************************************************
 isr_local_data UDATA_SHR
@@ -47,16 +47,19 @@ w_buf RES 1
 ;*******************************************************************************
 interrupt_vector CODE 0x04                                            ; 3
 ; enter interrupt service routine
-    isr_enter                                                         ; +2
+    movwf w_buf        ; only storing W, discarding STATUS
+    clrf  PIR1         ;assuming only TMR2IF
+
 ; write outputs to PORTA and read inputs
     io_latch                                                          ; +4
 ; generate pwm signal                                                 ;min/typ/max
-    pwm_step ;                                                        ;+11/11/20
+    call pwm_step                                                     ;+15/15/24
 ; handle uart
-    uart_rx_sample                                                    ;+8/9/13
+    call uart_rx_sample                                               ;+9/10/14
 
 ; exit interrupt service routine
-    ;isr_exit ; never reached, called by  uart_rx_sample
+    movfw w_buf      ;assuming STATUS not used                        ; +1
+    retfie                                                            ; +2
 
 
 ;                                            ;total cycles: min=28 typ=29 max=42
