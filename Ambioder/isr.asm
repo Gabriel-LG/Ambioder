@@ -62,7 +62,7 @@ interrupt_vector CODE 0x04                                            ; 3
     retfie                                                            ; +2
 
 
-;                                            ;total cycles: min=28 typ=29 max=42
+;                                            ;total cycles: min=34 typ=35 max=48
 ; never reached, added for convenient debugging
     movfw TMR2
 
