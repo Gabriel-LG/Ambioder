@@ -71,14 +71,14 @@ done
     CODE
 startup
 
-    color_to_max pwm_red, d'64'
-    color_to_max pwm_green, d'64'
-    color_to_min pwm_red, d'64'
-    color_to_max pwm_blue, d'64'
-    color_to_min pwm_green, d'64'
-    color_to_max pwm_red, d'64'
-    color_to_min pwm_blue, d'64'
-    color_to_min pwm_red, d'64'
+    color_to_max pwm_red, d'48'
+    color_to_max pwm_green, d'48'
+    color_to_min pwm_red, d'48'
+    color_to_max pwm_blue, d'48'
+    color_to_min pwm_green, d'48'
+    color_to_max pwm_red, d'48'
+    color_to_min pwm_blue, d'48'
+    color_to_min pwm_red, d'48'
 
     return
 
