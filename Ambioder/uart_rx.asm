@@ -75,12 +75,12 @@ uart_rx_init
 
 ;*******************************************************************************
 rx_start_0
-    btfsc io_buffer, IO_RX
+    btfss io_buffer, IO_RX
     incf rx_jump, F
     isr_exit
 
 rx_start_1
-    btfss io_buffer, IO_RX
+    btfsc io_buffer, IO_RX
     goto rx_enter_error
     incf rx_jump, F
     isr_exit
@@ -97,7 +97,7 @@ rx_data_0
 
 rx_data_1
     incf rx_jump, F
-    btfss io_buffer, IO_RX ;set bit if pin is set
+    btfsc io_buffer, IO_RX ;set bit if pin is clear
     bsf rx_buf, 7
     isr_exit
 
@@ -112,7 +112,7 @@ rx_stop_0
     isr_exit
 
 rx_stop_1
-    btfsc io_buffer, IO_RX
+    btfss io_buffer, IO_RX
     goto rx_enter_error
     clrf rx_jump
     movf rx_buf, W
@@ -121,7 +121,7 @@ rx_stop_1
     isr_exit
 
 rx_stop_1_overflow
-    btfsc io_buffer, IO_RX
+    btfss io_buffer, IO_RX
     goto rx_enter_error
     clrf rx_jump
     isr_exit

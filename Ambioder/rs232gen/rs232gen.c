@@ -56,21 +56,21 @@ void printBit(int bit)
 }
 void printByte(int byte)
 {
-  printBit(1);
+  printBit(0);
 
   int i;
   for(i=0; i<8; i++)
   {
-    printBit( (byte & 0x01)?0:1 );
+    printBit( (byte & 0x01)?1:0 );
     byte >>= 1;
   }
-  printBit(0);
+  printBit(1);
 }
 
 int usage()
 {
   fprintf(stderr, "\n");
-  fprintf(stderr, "Generate a MPLAB X stimulus file, simulating bytes transmitted over uart (8n1)\n");
+  fprintf(stderr, "Generate a MPLAB X stimulus file, simulating bytes transmitted over ttl-uart (8n1)\n");
   fprintf(stderr, "Usage: rs232gen <bittime> <byte> [byte, byte, ...]\n");
   fprintf(stderr, "       bittime: the bittime in intruction cycles (decimal)\n");
   fprintf(stderr, "       byte   : a byte to transmit (hex)\n");
@@ -100,7 +100,7 @@ int main(int argc, const char** argv)
     sscanf(argv[i], "%02x%c", &c);
     printByte(c);
   }
-  printBit(0);
+  printBit(1);
 
   //generate footer
   printf(footer);
